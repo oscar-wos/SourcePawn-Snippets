@@ -9,12 +9,11 @@ public Plugin myinfo = {
 	author = "TummieTum | Oscar Wos (OSWO)",
 	description = "CS:GO Night Vision",
 	version = PLUGIN_VERSION,
-	url = "https://github.com/OSCAR-WOS / https://steamcommunity.com/id/OSWO",
+	url = "https://www.team-secretforce.com | https://github.com/OSCAR-WOS / https://steamcommunity.com/id/OSWO",
 }
 
 public void OnPluginStart() {
 	RegConsoleCmd("sm_nvg", Command_NightVision);
-
 	HookEvent("player_spawn", Event_PlayerSpawn);
 }
 
