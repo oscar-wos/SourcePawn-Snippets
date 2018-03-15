@@ -2,7 +2,7 @@
 
 // Compiler Info: Pawn 1.8 - build 6041
 
-#define PLUGIN_VERSION "1.00.2"
+#define PLUGIN_VERSION "1.00.3"
 
 public Plugin myinfo = {
 	name = "Night Vision Goggles",
@@ -14,15 +14,14 @@ public Plugin myinfo = {
 
 public void OnPluginStart() {
 	RegConsoleCmd("sm_nvg", Command_NightVision);
-	HookEvent("player_spawn", Event_PlayerSpawn);
+	HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
 }
 
 public Action Event_PlayerSpawn(Event eEvent, const char[] cName, bool bDontBroadcast) {
 	int iClient = GetClientOfUserId(eEvent.GetInt("userid"));
 
-	if (IsFakeClient(iClient) || !IsPlayerAlive(iClient) || GetClientTeam(iClient) == 1) return;
-
-	RequestFrame(RequestedPlayerSpawnFrame, GetClientUserId(iClient));
+	if (IsFakeClient(iClient) || !IsPlayerAlive(iClient) || GetClientTeam(iClient) != 2) return;
+	SetEntProp(iClient, Prop_Send, "m_bNightVisionOn", 1);
 }
 
 public Action Command_NightVision(int iClient, int iArgs) {
@@ -33,15 +32,13 @@ public Action Command_NightVision(int iClient, int iArgs) {
 		return Plugin_Handled;
 	}
 
+	if (!IsPlayerAlive(iClient)) {
+		PrintToChat(iClient, "[Night Vision] Dead");
+		return Plugin_Handled;
+	}
+
 	int iNightVision = GetEntProp(iClient, Prop_Send, "m_bNightVisionOn");
 	SetEntProp(iClient, Prop_Send, "m_bNightVisionOn", (iNightVision + 1) % 2);
 
 	return Plugin_Handled;
-}
-
-public void RequestedPlayerSpawnFrame(int iUserId) {
-	int iClient = GetClientOfUserId(iUserId);
-	if (!iClient) return;
-
-	SetEntProp(iClient, Prop_Send, "m_bNightVisionOn", 1);
 }
