@@ -29,10 +29,15 @@ public Action Event_PlayerSpawn(Event eEvent, const char[] cName, bool bDontBroa
 public Action Command_NightVision(int iClient, int iArgs) {
 	int iClientTeam = GetClientTeam(iClient);
 
-	if (iClientTeam != 2) return PrintToChat(iClient, "[Night Vision] Invalid Team");
+	if (iClientTeam != 2) {
+		PrintToChat(iClient, "[Night Vision] Invalid Team");
+		return Plugin_Handled;
+	}
 
 	int iNightVision = GetEntProp(iClient, Prop_Send, "m_bNightVisionOn");
-	SetEntProp(iClient, Prop_Send, "m_bNightVisionOn", (iNightVision + 1) % 2)
+	SetEntProp(iClient, Prop_Send, "m_bNightVisionOn", (iNightVision + 1) % 2);
+
+	return Plugin_Handled;
 }
 
 public void RequestedPlayerSpawnFrame(int iUserId) {
